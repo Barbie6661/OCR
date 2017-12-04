@@ -1,0 +1,18 @@
+Preprocessing
+
+Pour utiliser cette partie, il suffit de taper 
+dans le dossier preprocessing, la commande
+
+make
+
+dans le bash. Il faut ensuite taper la commande
+ 
+./main "image.png"
+
+où "image.png" est le chemin de l'image à tester en 
+partant du dossier main.
+
+L'image se charge. Il suffit d'appuyer sur la touche 
+"Entrer" à chaque étape pour voir défiler l'image
+normale, en niveau de gris, binarisée, puis avec les
+caractères reconnus.
