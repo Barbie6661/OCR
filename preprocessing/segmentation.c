@@ -109,9 +109,32 @@ int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn) 
   return picture->w - 1; // The last column of the picture
 }
 
+int Count_letters(SDL_Surface *picture) {
+  int cpt = 0, beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
+  while (beginline < picture->h) {
+    beginline = FirstLine(picture, beginline);
+    if (beginline == -1)
+      break;
+    endline = EndLine(picture, beginline);
+    while(begincolumn < picture->w) {
+      begincolumn = FirstChar(picture, beginline, endline, begincolumn);
+      if (begincolumn == -1) //No caracter found
+      {
+        begincolumn = 0;
+        break;
+      }
+      endcolumn = EndChar(picture, beginline, endline, begincolumn);
+      cpt++;
+      begincolumn = endcolumn + 2;
+    }
+    beginline = endline + 2;
+  }
+  return cpt;
+}
+
 // Detect all characters of the picture
-struct memory *DetectAll(SDL_Surface *picture) {
-  struct memory *memory = malloc(sizeof(struct memory));
+struct memory *DetectAll(SDL_Surface *picture, int count) {
+  struct memory *memory = malloc(sizeof(struct memory) * count);
   init(memory);
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {

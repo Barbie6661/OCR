@@ -77,15 +77,15 @@ int main(int argc, char *argv[])
     return 1;
   init_sdl();
   SDL_Surface* picture = load_image(argv[1]);
-  display_image(picture);
+  //display_image(picture);
 
   Greyscale(picture);
-  display_image(picture);
+  //display_image(picture);
 
   Binarisation(picture);
-  display_image(picture);
-
-  struct memory *memory = DetectAll(picture);
+  //display_image(picture);
+  int n = Count_letters(picture);
+  struct memory *memory = DetectAll(picture, n);
   display_image(picture);
 
   print_all_matrix(memory);
