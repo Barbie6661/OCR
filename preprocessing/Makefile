@@ -8,7 +8,7 @@ LDFLAGS=
 LDLIBS= `pkg-config --libs sdl` -lSDL_image
  
 OBJ= ../createMat.o segmentation.o greyscale.o pixel_operations.o main.o
-DEP= ${SRC:.o=.d}
+DEP= ${OBJ:.o=.d}
  
 all: main
  

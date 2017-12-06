@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   struct memory *bank = DetectAll(picture, nbletters);
   display_image(picture);
 
-  print_all_matrix(bank);
+  print_all_matrix(bank, nbletters);
 
   Clear_memory(bank);
 

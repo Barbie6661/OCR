@@ -52,7 +52,7 @@ int endline,int begincolumn, int endcolumn)
 
 //Add matrice to memory
 void add_Mat(struct memory *bank, struct matrix *mat, int nbmat) {
-  memory->matrix[nbmat] = mat;
+  bank->matrix[nbmat] = mat;
 }
 
 void print_matrix(struct matrix *mat) {
@@ -64,9 +64,9 @@ void print_matrix(struct matrix *mat) {
   printf("\n");
 }
 
-void print_all_matrix(struct memory *bank) {
-  for (; bank; bank = bank->next)
-    print_matrix(memory->mat);
+void print_all_matrix(struct memory *bank, int size) {
+  for (int i = 0; i < size; i++)
+    print_matrix(bank->matrix[i]);
 }
 
 /*static void Clear_Mats(struct memory *bank) {
@@ -80,6 +80,6 @@ void print_all_matrix(struct memory *bank) {
 
 void Clear_memory(struct memory *bank) {
   //Clear_Mats(bank);
-  free(bank->matrix)
+  free(bank->matrix);
   free(bank);
 }

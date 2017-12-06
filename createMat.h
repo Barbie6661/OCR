@@ -24,10 +24,10 @@ struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);
 
 //Add matrice to memory
-void add_Mat(struct memory *bank, struct matrix *mat);
+void add_Mat(struct memory *bank, struct matrix *mat, int nbmat);
 
 void print_matrix(struct matrix *mat);
 
-void print_all_matrix(struct memory *bank);
+void print_all_matrix(struct memory *bank, int size);
 
 void Clear_memory(struct memory *bank);
