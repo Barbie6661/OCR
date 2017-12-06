@@ -29,4 +29,4 @@ int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn);
 
 int Count_letters(SDL_Surface *picture);
 // Detect all characters of the picture
-struct memory *DetectAll(SDL_Surface *picture, int count);
+struct memory *DetectAll(SDL_Surface *picture, int nbletters);

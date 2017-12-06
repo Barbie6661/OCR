@@ -133,9 +133,8 @@ int Count_letters(SDL_Surface *picture) {
 }
 
 // Detect all characters of the picture
-struct memory *DetectAll(SDL_Surface *picture, int count) {
-  struct memory *memory = malloc(sizeof(struct memory) * count);
-  init(memory);
+struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
+  struct memory *bank = init(nbletters);
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {
     beginline = FirstLine(picture, beginline);
@@ -151,10 +150,11 @@ struct memory *DetectAll(SDL_Surface *picture, int count) {
       }
       endcolumn = EndChar(picture, beginline, endline, begincolumn);
       Draw(picture, beginline, endline, begincolumn, endcolumn);
-      add_Mat(memory, CreateMat(picture,beginline, endline,begincolumn,endcolumn));
+      add_Mat(bank, CreateMat(picture,beginline, endline,
+        begincolumn,endcolumn), nbletters);
       begincolumn = endcolumn + 2;
     }
     beginline = endline + 2;
   }
-  return memory;
+  return bank;
 }

@@ -84,13 +84,13 @@ int main(int argc, char *argv[])
 
   Binarisation(picture);
   //display_image(picture);
-  int n = Count_letters(picture);
-  struct memory *memory = DetectAll(picture, n);
+  int nbletters = Count_letters(picture);
+  struct memory *bank = DetectAll(picture, nbletters);
   display_image(picture);
 
-  print_all_matrix(memory);
+  print_all_matrix(bank);
 
-  Clear_memory(memory);
+  Clear_memory(bank);
 
   return 0;
 }
