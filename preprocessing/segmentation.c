@@ -20,6 +20,8 @@ void DrawWidth (SDL_Surface *picture, int begincolumn, int endcolumn, int line) 
   }
 }
 
+
+
 // On the height
 void DrawHeight (SDL_Surface *picture, int beginline, int endline, int column) {
   Uint32 pixel;
@@ -134,7 +136,9 @@ int Count_letters(SDL_Surface *picture) {
 
 // Detect all characters of the picture
 struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
+  printf("Before init\n");
   struct memory *bank = init(nbletters);
+  printf("Afterinit\n");
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {
     beginline = FirstLine(picture, beginline);
@@ -149,12 +153,48 @@ struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
         break;
       }
       endcolumn = EndChar(picture, beginline, endline, begincolumn);
-      Draw(picture, beginline, endline, begincolumn, endcolumn);
+      //Draw(picture, beginline, endline, begincolumn, endcolumn);
+      printf("BeforeAdd\n");
       add_Mat(bank, CreateMat(picture,beginline, endline,
         begincolumn,endcolumn), nbletters);
+      printf("AfterAdd\n");
       begincolumn = endcolumn + 2;
     }
     beginline = endline + 2;
   }
   return bank;
 }
+
+/*void DRAWMAT(SDL_Surface *picture,int beginline,
+int endline,int begincolumn, int endcolumn) {
+  Uint32 pixel;
+  for (int i = begincolumn; i <= endcolumn; i++) {
+    for (int j = beginline; j <= endline; j++) {
+      pixel = SDL_MapRGB(picture->format, 0, 255, 0);
+      putpixel(picture, i, j, pixel);
+    }
+  }
+}
+void DetectAllDRAW(SDL_Surface *picture) {
+  int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
+  while (beginline < picture->h) {
+    beginline = FirstLine(picture, beginline);
+    if (beginline == -1)
+      break;
+    endline = EndLine(picture, beginline);
+    while(begincolumn < picture->w) {
+      begincolumn = FirstChar(picture, beginline, endline, begincolumn);
+      if (begincolumn == -1) //No caracter found
+      {
+        begincolumn = 0;
+        break;
+      }
+      endcolumn = EndChar(picture, beginline, endline, begincolumn);
+      printf("Before DRAW\n");
+      DRAWMAT(picture,beginline, endline, begincolumn, endcolumn);
+      printf("After DRAW\n");
+      begincolumn = endcolumn + 2;
+    }
+    beginline = endline + 2;
+  }
+}*/

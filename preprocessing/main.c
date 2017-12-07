@@ -73,20 +73,26 @@ SDL_Surface* display_image(SDL_Surface *img) {
 // Main function
 int main(int argc, char *argv[])
 {
-  if (argc < 2)
+  if (argc != 2)
     return 1;
   init_sdl();
   SDL_Surface* picture = load_image(argv[1]);
-  //display_image(picture);
+  display_image(picture);
 
   Greyscale(picture);
-  //display_image(picture);
+  display_image(picture);
 
   Binarisation(picture);
-  //display_image(picture);
-  int nbletters = Count_letters(picture);
-  struct memory *bank = DetectAll(picture, nbletters);
   display_image(picture);
+  int nbletters = Count_letters(picture);
+  printf("nbletters: %d\n", nbletters);
+  printf("break1\n");
+  struct memory *bank = DetectAll(picture, nbletters);
+  printf("BreakAfterDetect\n");
+  display_image(picture);
+
+  /*DetectAllDRAW(picture);
+  display_image(picture);*/
 
   print_all_matrix(bank, nbletters);
 
