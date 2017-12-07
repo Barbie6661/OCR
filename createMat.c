@@ -28,8 +28,8 @@ struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn)
 {
   printf("EntryCreateMat\n");
-  int lines = endline - beginline;
-  int columns = endcolumn - begincolumn;
+  int lines = endline - beginline + 1;
+  int columns = endcolumn - begincolumn + 1;
   printf("BeforeMallocMat\n");
   struct matrix *mat = malloc(sizeof(struct matrix)
     * lines * columns);
