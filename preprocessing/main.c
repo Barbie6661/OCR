@@ -86,9 +86,7 @@ int main(int argc, char *argv[])
   display_image(picture);
   int nbletters = Count_letters(picture);
   printf("nbletters: %d\n", nbletters);
-  printf("break1\n");
   struct memory *bank = DetectAll(picture, nbletters);
-  printf("BreakAfterDetect\n");
   display_image(picture);
 
   /*DetectAllDRAW(picture);

@@ -27,25 +27,20 @@ struct memory *init(int size) {
 struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn)
 {
-  printf("EntryCreateMat\n");
-  int lines = endline - beginline + 1;
-  int columns = endcolumn - begincolumn + 1;
-  printf("BeforeMallocMat\n");
+  int lines = endline - beginline;
+  int columns = endcolumn - begincolumn;
   struct matrix *mat = malloc(sizeof(struct matrix)
     * lines * columns);
-  printf("AfterMallocMat\n");
   mat->lines = lines;
   mat->columns = columns;
-  printf("BeforeMatint\n");
   int *mat1 = malloc(sizeof(int) * columns * lines);
-  printf("AfterMatint\n");
   Uint8 r, g , b;
   Uint32 pixel;
-  for (int i = begincolumn, k = 0; i <= endcolumn; i++, k++) {
-    for (int j = beginline, l = 0; j <= endline; j++, l++) {
+  for (int i = begincolumn, k = 0; i < endcolumn; i++, k++) {
+    for (int j = beginline, l = 0; j < endline; j++, l++) {
       pixel = getpixel(picture, i, j);
       SDL_GetRGB(pixel, picture->format, &r, &g, &b);
-      if (g == 0)
+      if (g == 0 && r == 0)
         mat1[k + l * columns] = 1;
       else
         mat1[k + l * columns] = 0;
@@ -53,15 +48,13 @@ int endline,int begincolumn, int endcolumn)
   }
   print_matrix(mat1, lines, columns);
   mat->mat = mat1;
-  printf("sortedcreateMat\n");
+  free(mat1);
   return mat;
 }
 
 //Add matrice to memory
 void add_Mat(struct memory *bank, struct matrix *mat, int nbmat) {
-  printf("EntryAddmat\n");
   bank->matrix[nbmat] = mat;
-  printf("sortedAddMat\n");
 }
 
 void print_matrix(int *mat,int lines,int columns) {
@@ -74,9 +67,11 @@ void print_matrix(int *mat,int lines,int columns) {
 }
 
 void print_all_matrix(struct memory *bank, int size) {
+  printf("Begin\n");
   for (int i = 0; i < size; i++)
     print_matrix(bank->matrix[i]->mat, bank->matrix[i]->lines,
      bank->matrix[i]->columns);
+  printf("End\n");
 }
 
 /*static void Clear_Mats(struct memory *bank) {
