@@ -24,8 +24,29 @@ void Greyscale (SDL_Surface *picture)
   }
 }
 
+//Find seuil value
+Uint8 Seuil(SDL_Surface *picture) {
+  Uint8 first_color = 0;
+  Uint8 second_color = 255;
+  Uint8 r, g , b;
+  Uint32 pixel;
+  for (int i = 0; i < picture->w; i++) {
+    for (int j = 0; j < picture->h; j++) {
+      pixel = getpixel(picture, i, j);
+      SDL_GetRGB(pixel, picture->format, &r, &g, &b);
+      if (g != first_color && g != second_color)
+         first_color = g;
+      else if (g == first_color && g != second_color) {
+         second_color = g;
+         break;
+      }
+
+    }
+  }
+  return (first_color + second_color) / 2;
+}
 // Put the picture only in dark and white
-void Binarisation(SDL_Surface *picture)
+void Binarisation(SDL_Surface *picture, Uint8 seuil)
 {
   Uint8 r, g , b;
   Uint32 pixel;
@@ -35,7 +56,7 @@ void Binarisation(SDL_Surface *picture)
     {
       pixel = getpixel(picture, i, j);
       SDL_GetRGB(pixel, picture->format, &r, &g, &b);
-      if (g < 127)
+      if (g < seuil)
       	 g = 0;
       else
       	 g = 255;

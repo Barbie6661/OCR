@@ -54,16 +54,21 @@ int endline,int begincolumn, int endcolumn)
 
 //Add matrice to memory
 void add_Mat(struct memory *bank, struct matrix *mat, int nbmat) {
+  //print_matrix(mat->mat, mat->lines, mat->columns);
   bank->matrix[nbmat] = mat;
+  //print_matrix(bank->matrix[nbmat]->mat,
+   //bank->matrix[nbmat]->lines, bank->matrix[nbmat]->columns);
 }
 
 void print_matrix(int *mat,int lines,int columns) {
+  printf("bM\n");
   for (int i = 0; i < lines; i++) {
     for (int j = 0; j < columns; j++)
-      printf("%d;" , mat[j + i * columns]);
+      printf("%d" , mat[j + i * columns]);
     printf("\n");
   }
   printf("\n");
+  printf("EM\n");
 }
 
 void print_all_matrix(struct memory *bank, int size) {

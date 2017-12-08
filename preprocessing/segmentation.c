@@ -154,6 +154,7 @@ struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
       //Draw(picture, beginline, endline, begincolumn, endcolumn);
       add_Mat(bank, CreateMat(picture,beginline, endline,
         begincolumn,endcolumn), nbletters);
+      Draw(picture, beginline, endline, begincolumn, endcolumn);
       begincolumn = endcolumn + 2;
     }
     beginline = endline + 2;

@@ -71,8 +71,7 @@ SDL_Surface* display_image(SDL_Surface *img) {
 
 
 // Main function
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   if (argc != 2)
     return 1;
   init_sdl();
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
   Greyscale(picture);
   display_image(picture);
 
-  Binarisation(picture);
+  Binarisation(picture, Seuil(picture));
   display_image(picture);
   int nbletters = Count_letters(picture);
   printf("nbletters: %d\n", nbletters);
