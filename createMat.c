@@ -3,14 +3,14 @@
 // Memory structure
 
 /*struct memory {
-  size_t        size;
+  int        size;
   struct matrix     **matrix;
 };
 
 struct matrix {
-  size_t          *mat;
-  size_t          lines;
-  size_t          columns;
+  double          *mat;
+  int          lines;
+  int          columns;
 };
 */
 
@@ -33,7 +33,7 @@ int endline,int begincolumn, int endcolumn)
     * lines * columns);
   mat->lines = lines;
   mat->columns = columns;
-  int *mat1 = malloc(sizeof(int) * columns * lines);
+  double *mat1 = malloc(sizeof(double) * columns * lines);
   Uint8 r, g , b;
   Uint32 pixel;
   for (int i = begincolumn, k = 0; i < endcolumn; i++, k++) {
@@ -41,9 +41,9 @@ int endline,int begincolumn, int endcolumn)
       pixel = getpixel(picture, i, j);
       SDL_GetRGB(pixel, picture->format, &r, &g, &b);
       if (g == 0 && r == 0)
-        mat1[k + l * columns] = 1;
+        mat1[k + l * columns] = 1.0;
       else
-        mat1[k + l * columns] = 0;
+        mat1[k + l * columns] = 0.0;
     }
   }
   print_matrix(mat1, lines, columns);
@@ -60,11 +60,11 @@ void add_Mat(struct memory *bank, struct matrix *mat, int nbmat) {
    //bank->matrix[nbmat]->lines, bank->matrix[nbmat]->columns);
 }
 
-void print_matrix(int *mat,int lines,int columns) {
+void print_matrix(double *mat,int lines,int columns) {
   printf("bM\n");
   for (int i = 0; i < lines; i++) {
     for (int j = 0; j < columns; j++)
-      printf("%d" , mat[j + i * columns]);
+      printf("%1g" , mat[j + i * columns]);
     printf("\n");
   }
   printf("\n");

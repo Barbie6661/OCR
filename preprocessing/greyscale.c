@@ -45,6 +45,8 @@ Uint8 Seuil(SDL_Surface *picture) {
   }
   return (first_color + second_color) / 2;
 }
+
+
 // Put the picture only in dark and white
 void Binarisation(SDL_Surface *picture, Uint8 seuil)
 {
