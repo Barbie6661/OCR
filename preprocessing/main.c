@@ -6,6 +6,7 @@
 # include "greyscale.h"
 # include "segmentation.h"
 # include "../createMat.h"
+# include "contrast.h"
 
 // Waiting for key
 void wait_for_keypressed(void) {
@@ -77,7 +78,8 @@ int main(int argc, char *argv[]) {
   init_sdl();
   SDL_Surface* picture = load_image(argv[1]);
   display_image(picture);
-
+ 
+  contrast(picture);
   Greyscale(picture);
   display_image(picture);
 
