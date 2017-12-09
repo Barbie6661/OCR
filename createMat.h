@@ -23,6 +23,9 @@ struct memory *init(int size);
 struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);
 
+struct matrix *resizeMat(SDL_Surface *picture,int beginline,
+int endline,int begincolumn, int endcolumn, int dim);
+
 //Add matrice to memory
 void add_Mat(struct memory *bank, struct matrix *mat, int nbmat);
 

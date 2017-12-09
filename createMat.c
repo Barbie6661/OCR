@@ -1,4 +1,5 @@
 #include "createMat.h"
+#include <math.h>
 
 // Memory structure
 
@@ -24,6 +25,75 @@ struct memory *init(int size) {
   return bank;
 }
 
+
+struct matrix *resizeMat(SDL_Surface *picture,int beginline,
+int endline,int begincolumn, int endcolumn, int dim)
+{
+  struct matrix *mat = malloc(sizeof(struct matrix) * dim * dim);
+  mat->lines = dim;
+  mat->columns = dim;
+  double *mat1 = malloc(sizeof(double) * dim * dim);
+  Uint8 r, g , b;
+  Uint32 pixel;
+  for (int i = begincolumn, k = 0; i < endcolumn; i++, k++) {
+    for (int j = beginline, l = 0; j < endline; j++, l++) {
+      pixel = getpixel(picture, k*picture->w/dim, l*picture->h/dim);
+      SDL_GetRGB(pixel, picture->format, &r, &g, &b);
+        mat1[k + l * dim] = g%254;
+    }
+  }
+  print_matrix(mat1, dim, dim);
+  mat->mat = mat1;
+  free(mat1);
+  return mat;
+}
+
+static struct matrix *resize_matrix(struct matrix *src, size_t newH, size_t newW)
+{
+
+  struct matrix *dst = malloc(sizeof(struct matrix));
+  dst->lines = newH;
+  dst->columns = newW;
+  dst->mat = malloc(sizeof(double) * dst->lines * dst->columns);
+  
+  int coefH = floor((double)src->lines/(double)dst->lines);
+  int coefW = floor((double)src->columns/(double)dst->columns);
+
+  //printf("COEFW : %ld \n\n", coefW);
+  
+  double *temp = malloc(sizeof(double)*src->lines*dst->columns);
+  
+  for(int i = 0; i < src->lines; i++) {
+    double buff = 0;
+    for(int j = 0; j < src->columns /*dst->w*/; j++) {
+      buff += src->mat[i*src->columns+j];
+      if((j+1)%coefW == 0) {
+  //printf("%ld & %d & %.2f\n", j, i*dst->w+j/coefW, buff/(double)coefW);
+  temp[i*dst->columns+j/coefW] = /*(double)floor*/(buff/(double)coefW);
+  buff = 0;
+      }
+    }
+  }
+
+  //print_matrix(temp, src->h, dst->w);
+
+  for(int i = 0; i < dst->columns; i++) {
+    double buff = 0;
+    for(int j = 0; j < src->lines; j++) {
+      buff += temp[j*dst->columns+i];
+      
+      if((j+1)%coefH == 0) {
+  dst->mat[j/coefH*dst->columns+i] = floor(buff/(double)coefH);
+  buff = 0;
+      }
+    }
+  }
+  free(temp);
+  print_matrix(dst->mat, dst->lines, dst->columns);
+
+  return dst;
+}
+
 struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn)
 {
@@ -46,8 +116,11 @@ int endline,int begincolumn, int endcolumn)
         mat1[k + l * columns] = 0.0;
     }
   }
-  print_matrix(mat1, lines, columns);
+  //print_matrix(mat1, lines, columns);
+  mat->mat = malloc(sizeof(double) * lines * columns);
   mat->mat = mat1;
+  mat = resize_matrix(mat, 4, 4);
+  print_matrix(mat->mat, lines, columns);
   free(mat1);
   return mat;
 }
