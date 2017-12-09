@@ -9,7 +9,8 @@ SDL_Surface* contrast(SDL_Surface* image)
 {
   Uint8 maxi = 0;
   Uint8 mini = 255;
-  for (unsigned x = 0; x < (unsigned)(image->w); x++)
+  
+    for (unsigned x = 0; x < (unsigned)(image->w); x++)
     for (unsigned y = 0; y < (unsigned)(image->h); y++)
     {
       Uint32 pixel = getpixel(image, x, y);
@@ -23,6 +24,7 @@ SDL_Surface* contrast(SDL_Surface* image)
         mini = (r+g+b)/3;
     }
   Uint8 max = 255;
+
   for (unsigned x = 0; x < (unsigned)(image->w); x++)
     for (unsigned y = 0; y < (unsigned)(image->h); y++)
     {
@@ -31,14 +33,14 @@ SDL_Surface* contrast(SDL_Surface* image)
       Uint8 g;
       Uint8 b;
       SDL_GetRGB(pixel, image->format, &r, &g, &b);
-      Uint8 nv = ((r+g+b)/3 - mini)*max/maxi;
+      Uint8 c = ((r+g+b)/3 - mini)*max/maxi;
 
-      Uint8 d = nv/25;
-      if (nv%25 > 12)
-        d += 1;
-      nv = 25 * d;
+      Uint8 t = c / 25;
+      if (c % 25 > 12)
+         t += 1;
+      c = 25 * t;
 
-      pixel = SDL_MapRGB(image->format, nv, nv, nv);
+      pixel = SDL_MapRGB(image->format, c, c, c);
       putpixel(image, x, y, pixel);
     }
   return image;
