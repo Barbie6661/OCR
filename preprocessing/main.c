@@ -75,6 +75,17 @@ int main(int argc, char *argv[]) {
   if (argc != 2)
     return 1;
   init_sdl();
+
+  /*SDL_Surface *pic = SDL_CreateRGBSurface(0,90,150,32,0,0,0,0);
+  Uint32 pixel;
+  for (int i = 0; i < pic->w; i++) {
+    for (int j = 0; j < pic->h; j++) {
+      pixel = SDL_MapRGB(pic->format, 255, 0, 0);
+      putpixel(pic, i, j, pixel);
+    }
+  }
+  display_image(pic);*/
+
   SDL_Surface* picture = load_image(argv[1]);
   display_image(picture);
 
