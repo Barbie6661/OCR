@@ -7,7 +7,7 @@
 
 # include "segmentation.h"
 # include "pixel_operations.h"
-# include "../createMat.h"
+# include "../Matrix/createMat.h"
 
 // Draw red line to delimited characters
 

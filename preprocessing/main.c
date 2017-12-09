@@ -5,7 +5,7 @@
 # include "pixel_operations.h"
 # include "greyscale.h"
 # include "segmentation.h"
-# include "../createMat.h"
+# include "../Matrix/createMat.h"
 # include "contrast.h"
 
 // Waiting for key
@@ -91,6 +91,7 @@ int main(int argc, char *argv[]) {
   display_image(picture);
  
   contrast(picture);
+  display_image(picture);
   Greyscale(picture);
   display_image(picture);
 

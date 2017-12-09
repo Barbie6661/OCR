@@ -3,7 +3,7 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 
-# include "preprocessing/pixel_operations.h"
+# include "../preprocessing/pixel_operations.h"
 
 // Memory structure
 struct memory {
@@ -22,6 +22,11 @@ struct memory *init(int size);
 
 struct matrix *CreateMat(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);
+
+SDL_Surface* create_image_letter(SDL_Surface *picture,int beginline,
+int endline,int begincolumn, int endcolumn);
+
+struct matrix *resizeMat(SDL_Surface *picture, int dim);
 
 //Add matrice to memory
 void add_Mat(struct memory *bank, struct matrix *mat, int nbmat);
