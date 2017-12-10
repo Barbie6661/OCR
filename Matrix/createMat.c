@@ -4,7 +4,7 @@
 // Memory structure
 
 /*struct memory {
-  int                 size;
+  size_t              size;
   struct matrix     **tab;
 };
 
@@ -30,17 +30,17 @@ struct matrix *resizeMat(SDL_Surface *picture, int dim)
   struct matrix *mat = malloc(sizeof(struct matrix));
   mat->lines = dim;
   mat->columns = dim;
-  double *mat1 = malloc(sizeof(double) * dim * dim);
+  mat->mat = malloc(sizeof(double) * dim * dim);
   Uint8 r, g , b;
   Uint32 pixel;
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
       pixel = getpixel(picture, i*picture->w/dim, j*picture->h/dim);
       SDL_GetRGB(pixel, picture->format, &r, &g, &b);
-        mat1[i + j * dim] = !(g%254);
+        mat->mat[i + j * dim] = !(g%254);
     }
   }
-  mat->mat = mat1;
+  SDL_FreeSurface(picture);
   return mat;
 }
 
@@ -74,8 +74,6 @@ void print_matrix(double *mat,int lines,int columns) {
 void print_all_matrix(struct memory *bank, size_t size) {
   printf("Begin\n");
   for (size_t i = 0; i < size; i++) {
-    printf("%d\n", bank->tab[i]->lines);
-    printf("%d\n", bank->tab[i]->columns);
     print_matrix(bank->tab[i]->mat, bank->tab[i]->lines,
      bank->tab[i]->columns);
   }
@@ -84,9 +82,10 @@ void print_all_matrix(struct memory *bank, size_t size) {
 
 static void Clear_Mats(struct memory *bank, size_t nbletters) {
   for (size_t i = 0; i < nbletters; i++) {
-    //free(bank->tab[i]->mat);
+    free(bank->tab[i]->mat);
     free(bank->tab[i]);
   }
+
 }
 
 void Clear_memory(struct memory *bank, size_t nbletters) {
