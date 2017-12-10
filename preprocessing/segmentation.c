@@ -111,8 +111,9 @@ int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn) 
   return picture->w - 1; // The last column of the picture
 }
 
-int Count_letters(SDL_Surface *picture) {
-  int cpt = 0, beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
+size_t Count_letters(SDL_Surface *picture) {
+  size_t cpt = 0;
+  int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {
     beginline = FirstLine(picture, beginline);
     if (beginline == -1)
@@ -135,7 +136,7 @@ int Count_letters(SDL_Surface *picture) {
 }
 
 // Detect all characters of the picture
-struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
+struct memory *DetectAll(SDL_Surface *picture, size_t nbletters) {
   struct memory *bank = init(nbletters);
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {
@@ -161,37 +162,3 @@ struct memory *DetectAll(SDL_Surface *picture, int nbletters) {
   }
   return bank;
 }
-
-/*void DRAWMAT(SDL_Surface *picture,int beginline,
-int endline,int begincolumn, int endcolumn) {
-  Uint32 pixel;
-  for (int i = begincolumn; i <= endcolumn; i++) {
-    for (int j = beginline; j <= endline; j++) {
-      pixel = SDL_MapRGB(picture->format, 0, 255, 0);
-      putpixel(picture, i, j, pixel);
-    }
-  }
-}
-void DetectAllDRAW(SDL_Surface *picture) {
-  int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
-  while (beginline < picture->h) {
-    beginline = FirstLine(picture, beginline);
-    if (beginline == -1)
-      break;
-    endline = EndLine(picture, beginline);
-    while(begincolumn < picture->w) {
-      begincolumn = FirstChar(picture, beginline, endline, begincolumn);
-      if (begincolumn == -1) //No caracter found
-      {
-        begincolumn = 0;
-        break;
-      }
-      endcolumn = EndChar(picture, beginline, endline, begincolumn);
-      printf("Before DRAW\n");
-      DRAWMAT(picture,beginline, endline, begincolumn, endcolumn);
-      printf("After DRAW\n");
-      begincolumn = endcolumn + 2;
-    }
-    beginline = endline + 2;
-  }
-}*/

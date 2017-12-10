@@ -92,13 +92,14 @@ int main(int argc, char *argv[]) {
  
   contrast(picture);
   display_image(picture);
+
   Greyscale(picture);
   display_image(picture);
 
   Binarisation(picture, Seuil(picture));
   display_image(picture);
-  int nbletters = Count_letters(picture);
-  printf("nbletters: %d\n", nbletters);
+  size_t nbletters = Count_letters(picture);
+  printf("nbletters: %zu\n", nbletters);
   struct memory *bank = DetectAll(picture, nbletters);
   display_image(picture);
 

@@ -27,9 +27,9 @@ int FirstChar (SDL_Surface *picture, int beginline, int endline, int begincolumn
 // return the last column where a black pixel was found
 int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn);
 
-int Count_letters(SDL_Surface *picture);
+size_t Count_letters(SDL_Surface *picture);
 // Detect all characters of the picture
-struct memory *DetectAll(SDL_Surface *picture, int nbletters);
+struct memory *DetectAll(SDL_Surface *picture, size_t nbletters);
 
 /*void DRAWMAT(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);

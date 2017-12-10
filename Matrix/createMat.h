@@ -18,10 +18,7 @@ struct matrix {
 };
 
 //Init 
-struct memory *init(int size);
-
-struct matrix *CreateMat(SDL_Surface *picture,int beginline,
-int endline,int begincolumn, int endcolumn);
+struct memory *init(size_t size);
 
 SDL_Surface* create_image_letter(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);
@@ -29,10 +26,10 @@ int endline,int begincolumn, int endcolumn);
 struct matrix *resizeMat(SDL_Surface *picture, int dim);
 
 //Add matrice to memory
-void add_Mat(struct memory *bank, struct matrix *mat, int nbmat);
+void add_Mat(struct memory *bank, struct matrix *mat, size_t nbmat);
 
 void print_matrix(double *mat, int lines, int columns);
 
-void print_all_matrix(struct memory *bank, int size);
+void print_all_matrix(struct memory *bank, size_t size);
 
 void Clear_memory(struct memory *bank);
