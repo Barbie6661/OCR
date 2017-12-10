@@ -7,13 +7,17 @@
 #include "pixel_operations.h"
 #include "segmentation.h"
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
 
-      typedef struct
-      {
+typedef struct
+{
         GtkBuilder *builder;
         gpointer user_data;
-        GtkWidget *Sentence;
-      } SGlobalData;
+} SGlobalData;
+      
+static SGlobalData data;   
+static GtkImage *image;
+
       // Initilizing SDL
 void init_sdl(void) {
   // Init only the video part
@@ -82,6 +86,13 @@ SDL_Surface* display_image(SDL_Surface *img) {
       {
 		  gtk_main_quit();
 	  }
+	  G_MODULE_EXPORT void on_Charger_selection_changed()
+	  {
+		  GtkFileChooser *file=GTK_FILE_CHOOSER(gtk_builder_get_object (data.builder, "Charger"));
+		  const gchar *filename=gtk_file_chooser_get_filename(file);
+		  image=GTK_IMAGE(gtk_builder_get_object(data.builder, "Image"));
+		  gtk_image_set_from_file(image, filename);
+	  }	    
 	  G_MODULE_EXPORT void on_treatment_image_TESTocr_clicked()
 	  {
 		init_sdl();
@@ -98,28 +109,6 @@ SDL_Surface* display_image(SDL_Surface *img) {
         display_image(picture);
         
 	  }
-	  
-      G_MODULE_EXPORT void Display_text(GtkTextView *textview)
-      {
-		 const gchar *file_name= "data.txt";
-		 g_return_if_fail(file_name && textview);
-		 {
-			 gchar *contents=NULL;
-			 if(g_file_get_contents(file_name,&contents,NULL,NULL))
-			{ 			
-				 gchar *utf8 =NULL;
-				 GtkTextIter iter;
-				 GTkTextBuffer *buff=NULL;
-				 buff= gtk_text_view_get_buffer(textview);
-				 gtk_text_buffer_get_iter_at_line(buff,&iter,0);
-				 utf8= g_locale_to_utf8(contents,-1,NULL,NULL,NULL);
-				 g_free(contents),contents=NULL;
-				 gtk_text_buffer_insert(buff,&iter,utf8,-1);
-				 g_free(utf8),utf8=NULL;
-			 }
-		 }
-
-	  }
 	  G_MODULE_EXPORT void on_treatment_image_LAST_clicked()
 	  {
 		init_sdl();
@@ -135,6 +124,7 @@ SDL_Surface* display_image(SDL_Surface *img) {
         DetectAll(picture);
         display_image(picture);
 	  }
+
       int
       main(int argc, char *argv [])
       {
@@ -143,12 +133,13 @@ SDL_Surface* display_image(SDL_Surface *img) {
         SGlobalData data;
         GError *error = NULL;
         gchar *filename = NULL;
+       
         /* Initialisation de la bibliothèque Gtk. */
         gtk_init(&argc, &argv);
 
         /* Ouverture du fichier Glade de la fenêtre principale */
         data.builder = gtk_builder_new();
-
+ 
         /* Création du chemin complet pour accéder au fichier test.glade. */
         /* g_build_filename(); construit le chemin complet en fonction du système */
         /* d'exploitation. ( / pour Linux et \ pour Windows) */
