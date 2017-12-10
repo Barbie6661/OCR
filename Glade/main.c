@@ -15,8 +15,8 @@ typedef struct
         gpointer user_data;
 } SGlobalData;
       
-static SGlobalData data;   
-static GtkImage *image;
+static SGlobalData data;  
+static gchar *name_of_image=NULL;
 
       // Initilizing SDL
 void init_sdl(void) {
@@ -88,34 +88,32 @@ SDL_Surface* display_image(SDL_Surface *img) {
 	  }
 	  G_MODULE_EXPORT void on_Charger_selection_changed()
 	  {
-		  GtkFileChooser *file=GTK_FILE_CHOOSER(gtk_builder_get_object (data.builder, "Charger"));
-		  const gchar *filename=gtk_file_chooser_get_filename(file);
-		  image=GTK_IMAGE(gtk_builder_get_object(data.builder, "Image"));
-		  gtk_image_set_from_file(image, filename);
+		  GObject *ex= gtk_builder_get_object (data.builder, "Charger");
+		  if(NULL ==ex)
+		  {
+			fprintf(stderr,"unable to file object");
+		  }
+		  GtkFileChooser *file= GTK_FILE_CHOOSER(ex);
+		  name_of_image=gtk_file_chooser_get_filename(file);
+		  
+		  GtkImage *image=GTK_IMAGE(gtk_builder_get_object(data.builder, "Image"));
+		  gtk_image_set_from_file(image, name_of_image);
 	  }	    
-	  G_MODULE_EXPORT void on_treatment_image_TESTocr_clicked()
+	  
+	  G_MODULE_EXPORT void on_Display_text_clicked()
 	  {
-		init_sdl();
-	    SDL_Surface* picture = load_image("TESTocr.png");
-	    display_image(picture);
-	    
-	    Greyscale(picture);
-        display_image(picture);
-
-        Binearisation(picture);
-        display_image(picture);
-
-        DetectAll(picture);
-        display_image(picture);
-        
+		  
 	  }
-	  G_MODULE_EXPORT void on_treatment_image_LAST_clicked()
+	  G_MODULE_EXPORT void on_treatment_image_clicked()
 	  {
 		init_sdl();
-	    SDL_Surface* picture = load_image("LAST.png");
+        if(name_of_image==NULL)
+        {
+			fprintf(stderr,"NULL");
+		}
+		SDL_Surface* picture= load_image(name_of_image);
 	    display_image(picture);
-	    
-	    Greyscale(picture);
+	     Greyscale(picture);
         display_image(picture);
 
         Binearisation(picture);
@@ -124,16 +122,13 @@ SDL_Surface* display_image(SDL_Surface *img) {
         DetectAll(picture);
         display_image(picture);
 	  }
-
       int
       main(int argc, char *argv [])
       {
 		
         GtkWidget *fenetre_principale = NULL;
-        SGlobalData data;
         GError *error = NULL;
-        gchar *filename = NULL;
-       
+        gchar *filename=NULL;
         /* Initialisation de la bibliothèque Gtk. */
         gtk_init(&argc, &argv);
 
