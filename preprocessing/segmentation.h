@@ -4,17 +4,6 @@
 # include <stdlib.h>
 # include <SDL/SDL.h>
 
-
-// Draw red line to delimited characters
-
-// On the width
-void DrawWidth(SDL_Surface *picture, int begincolumn, int endcolumn, int line);
-// On the height
-
-void DrawHeight(SDL_Surface *picture, int beginline, int endline, int column);
-
-void Draw (SDL_Surface *picture, int beginline, int endline, int begincolumn, int endcolumn);
-
 // return the first line where a black pixel was found
 int FirstLine (SDL_Surface *picture, int begin);
 
@@ -27,11 +16,9 @@ int FirstChar (SDL_Surface *picture, int beginline, int endline, int begincolumn
 // return the last column where a black pixel was found
 int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn);
 
+// Count the number of character in the picture
 size_t Count_letters(SDL_Surface *picture);
-// Detect all characters of the picture
+
+// Detect all characters of the picture and create a data bank
 struct memory *DetectAll(SDL_Surface *picture, size_t nbletters);
 
-/*void DRAWMAT(SDL_Surface *picture,int beginline,
-int endline,int begincolumn, int endcolumn);
-
-void DetectAllDRAW(SDL_Surface *picture);*/

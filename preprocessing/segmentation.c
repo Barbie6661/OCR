@@ -6,38 +6,11 @@
 # include <SDL/SDL_image.h>
 
 # include "segmentation.h"
+# include "draw.h"
 # include "pixel_operations.h"
 # include "../Matrix/createMat.h"
 
-// Draw red line to delimited characters
 
-// On the width
-void DrawWidth (SDL_Surface *picture, int begincolumn, int endcolumn, int line) {
-  Uint32 pixel;
-  for (int i = begincolumn; i <= endcolumn; i++) {
-    pixel = SDL_MapRGB(picture->format, 255, 0, 0);
-    putpixel(picture, i, line, pixel);
-  }
-}
-
-
-
-// On the height
-void DrawHeight (SDL_Surface *picture, int beginline, int endline, int column) {
-  Uint32 pixel;
-  for (int j = beginline; j <= endline; j++) {
-    pixel = SDL_MapRGB(picture->format, 255, 0, 0);
-    putpixel(picture, column, j, pixel);
-  }
-}
-
-void Draw (SDL_Surface *picture, int beginline, int endline,
-int begincolumn, int endcolumn) {
-  DrawHeight(picture, beginline, endline, begincolumn);
-  DrawHeight(picture, beginline, endline, endcolumn);
-  DrawWidth(picture, begincolumn, endcolumn, beginline);
-  DrawWidth(picture, begincolumn, endcolumn, endline);
-}
 
 // Segmentation by line
 
@@ -111,6 +84,7 @@ int EndChar (SDL_Surface *picture, int beginline, int endline, int begincolumn) 
   return picture->w - 1; // The last column of the picture
 }
 
+// Count the number of character in the picture
 size_t Count_letters(SDL_Surface *picture) {
   size_t cpt = 0;
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
@@ -135,7 +109,7 @@ size_t Count_letters(SDL_Surface *picture) {
   return cpt;
 }
 
-// Detect all characters of the picture
+// Detect all characters of the picture and create a data bank
 struct memory *DetectAll(SDL_Surface *picture, size_t nbletters) {
   size_t cpt = 0;
   struct memory *bank = init(nbletters);
@@ -153,7 +127,7 @@ struct memory *DetectAll(SDL_Surface *picture, size_t nbletters) {
         break;
       }
       endcolumn = EndChar(picture, beginline, endline, begincolumn);
-      //Draw(picture, beginline, endline, begincolumn, endcolumn);
+      // Add Matrix 30 * 30 to the data bank
       add_Mat(bank, resizeMat(create_image_letter(picture,beginline,
        endline, begincolumn,endcolumn),30), cpt);
       cpt++;

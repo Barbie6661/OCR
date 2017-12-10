@@ -17,12 +17,14 @@ struct matrix {
   int					columns;
 };
 
-//Init 
+//Init the memory
 struct memory *init(size_t size);
 
+// Create an image of the character from the picture
 SDL_Surface* create_image_letter(SDL_Surface *picture,int beginline,
 int endline,int begincolumn, int endcolumn);
 
+// Put a picture on a matrix with a size chosen
 struct matrix *resizeMat(SDL_Surface *picture, int dim);
 
 //Add matrice to memory
