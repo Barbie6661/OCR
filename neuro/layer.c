@@ -1,5 +1,7 @@
 #include "layer.h"
 #include <err.h>
+#include <dirent.h>
+#include "../preprocessing/pixel_operations.h"
 
 double frand_a_b(double a, double b)
 {
@@ -96,105 +98,141 @@ void free_pointers(struct neuro **layer, size_t len)
 void set_weight_in_txt(struct neuro **layer1, size_t len, char c, size_t nbweight)
 {
   FILE* file = NULL;
-  if (c) {
-    file = fopen("weight.ocr", "w");
+  if(c)
+  {
+    file = fopen("weights.ocr", "w");
   }
   else
-    file = fopen("weight.ocr", "a");
-  if(file != NULL)
   {
-    for (size_t i = 0; i < len; i++)
+    file = fopen("weights.ocr", "a");
+  }
+  if(!file)
+  {
+    errx(1, "Can't load weights");
+  }
+  for (size_t i = 0; i < len; i++)
     {
       for (size_t j = 0; j < nbweight; j++)
       {
-        fprintf(file, "%lf\n", *(layer1[i] -> weight + j) );
+        fprintf(file, "%lf\n", *(layer1[i] -> weight + j));
+        //fprintf(stderr, "%lf\n", *(layer1[i]->weight + j));
       }
     }
   fclose(file);
-  }
 }
 
-size_t get_weight_in_txt(struct neuro **layer1, size_t len, char c, size_t nbweight, size_t i)
+int get_weight_in_txt(struct neuro **layer, size_t len, size_t nbweight, FILE* file)
 {
-  FILE* file = NULL;
-  file = fopen("weight.ocr", "r");
-  if(file !=  NULL){
-    for (size_t j = 0; j < i; j++)
+  if(!file)
+  {
+    return 0;
+  }
+  for (size_t i = 0; i < len; i++)
+  {
+    for (size_t j = 0; j < nbweight; j++)
     {
-      fscanf(file, "%lf", &*(layer1[0]->weight));
-    }
-    for (size_t k = 0; k < len; k++) {
-      for (size_t l = 0; l < nbweight; l++)
-      {
-        fscanf(file, "%lf", &*(layer1[k] -> weight + l) );
-        i++;
-      }
+      fscanf(file, "%lf", &*(layer[i]->weight + j));
     }
   }
-  return i;
+  return 1;
+
 }
 
-double *resize_tab(double *src, size_t x, size_t width, size_t height)
+double *resize(SDL_Surface *img, size_t n)
 {
-  double *dst = malloc(sizeof(double)* x *x);
-  for (size_t i = 0; i < x; i++) {
-    for (size_t j = 0; j < x; j++) {
-      dst[i+j * x] = src[(i * width/x) + (j * height/x) * height];
+  double *tab = malloc(sizeof(double) * n * n);
+  Uint8 r, g, b;
+  for (size_t x = 0; x < n; x++)
+  {
+    for (size_t y = 0; y < n; y++)
+    {
+      SDL_GetRGB(getpixel(img, x*img->w/n, y*img->h/n), img->format, &r, &g, &b);
+      *(tab + x * n + y) = r%254;
+      //printf("%ld\n", x + y*32);
     }
   }
-  return dst;
+  return tab;
 }
 double *expected_value_tab(char c)
 {
-  double *res = calloc(26, sizeof(size_t));
+  double *res = calloc(26, sizeof(double));
   if(c >= 'a' && c <= 'z')
   {
     res[c-'a'] = 1;
-    printf("c - a = %d\n", c-'a' );
+  }
+  else if(c >= 'A' && c <= 'Z')
+  {
+    res[c-'A'] = 1;
   }
   return res;
 }
+
+double error(struct neuro **output, size_t len)
+{
+  double error = 0;
+  for (size_t i = 0; i < len; i++) {
+    error += fabs(output[i] -> delta);
+  }
+  return error;
+}
 void learn()
 {
-  struct neuro **inputs = init_layer(2, 2);
-  struct neuro **hidden = init_layer(1,2);
-  struct neuro **output = init_layer(0,1);
-  double *entree = malloc(sizeof(double) * 2);
-  double res;
-  for (size_t i = 0; i < 10000000; i++) {
-    switch (i % 4) {
-      case 0:
-        res = 0;
-        entree[0] = 0;
-        entree[1] = 0;
-        break;
-      case 1:
-        res = 1;
-        entree[0] = 0;
-        entree[1] = 1;
-        break;
-      case 2:
-        res = 1;
-        entree[0] = 1;
-        entree[1] = 0;
-        break;
-      case 3 :
-        res = 0;
-        entree[0] = 1;
-        entree[1] = 1;
-        break;
+  struct neuro **inputs = init_layer(150, 900);
+  struct neuro **hidden = init_layer(26,150);
+  struct neuro **output = init_layer(0,26);
+  char *ch = malloc(sizeof(char)* 200);
+  double *res;
+  double *tab;
+  double err = 10000;
+  FILE* file = NULL;
+  file = fopen("weight.ocr", "r");
+  get_weight_in_txt(inputs, 900, 150,file);
+  get_weight_in_txt(hidden, 150,26,file);
+  //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[0], hidden[0] -> weight[0] );
+  //lsprintf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[1], hidden[0] -> weight[1] );
+  for (size_t i = 0; err > 70; i++)
+  {
+    err = 0;
+    DIR * j = opendir("./neuro/learning");
+    struct dirent * dr;
+    dr = readdir(j);
+    dr = readdir(j);
+    while ((dr = readdir(j)) != NULL)
+    {
+      strcpy(ch, "./neuro/learning/");
+      strcat(ch, dr->d_name);
+
+      SDL_Surface *img = IMG_Load(ch);
+      res = expected_value_tab(dr -> d_name[0]);
+      tab = resize(img, 30);
+      set_enter(inputs, tab, 900);
+      front_propa(inputs, hidden,900,150);
+      front_propa(hidden, output,150,26);
+      back_propa_output(output, res, 26);
+      back_propa(hidden, output,150,26);
+      back_propa(inputs,hidden,900,150);
+      set_weight(inputs, hidden,900,150, 0.002);
+      set_weight(hidden, output,150,26, 0.002);
+      SDL_FreeSurface(img);
+      free(res);
+      free(tab);
+      err += error(output, 26);
     }
-    set_enter(inputs, entree, 2);
-    front_propa(inputs, hidden,2,2);
-    front_propa(hidden, output,2,1);
-    back_propa_output(output, &res, 1);
-    back_propa(hidden, output,2,1);
-    back_propa(inputs,hidden,2,2);
-    set_weight(inputs, hidden,2,2, 0.2);
-    set_weight(hidden, output,2,1, 0.2);
-    printf("a = %lf, b = %lf \n", entree[0], entree[1] );
-    printf("s = %lf\n", output[0] -> value );
+    err /= 12;
+
+    printf("%lf\n", err );
   }
+  hidden[0] -> weight[0] = 0.10;
+  set_weight_in_txt(inputs, 900,1,150);
+  set_weight_in_txt(hidden, 150,0,26);
+  //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[0], hidden[0] -> weight[0] );
+  //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[1], hidden[0] -> weight[1] );
+  //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[0], hidden[0] -> weight[0] );
+  //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[1], hidden[0] -> weight[1] );
+  fclose(file);
+  free_pointers(inputs,900);
+  free_pointers(hidden,150);
+  free_pointers(output,26);
 }
 
 void only_front()
@@ -204,22 +242,7 @@ void only_front()
 
 
 
-int main(int argc, char const *argv[]) {
-  double src[] = {0,0,0,0,1,0,1,0,
-                  0,0,0,0,1,0,1,0,
-                  0,0,0,0,1,1,1,0,
-                  0,0,0,0,1,0,1,0,
-                  0,0,0,0,1,0,1,0};
-  size_t x = 5;
-  double *dst = resize_tab(src, x ,8, 5 );
-  for (size_t i = 0; i < x+2; i++) {
-    for (size_t j = 0; j < x; j++) {
-      printf("%lf ,", dst[i+j] );
-    }
-    printf("\n");
-  }
-  return 0;
-}
+
 /*
 0.680375
 -0.211234
