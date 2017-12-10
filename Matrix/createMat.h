@@ -8,7 +8,7 @@
 // Memory structure
 struct memory {
   int					size;
-  struct matrix			**matrix;
+  struct matrix			**tab;
 };
 
 struct matrix {
@@ -32,4 +32,4 @@ void print_matrix(double *mat, int lines, int columns);
 
 void print_all_matrix(struct memory *bank, size_t size);
 
-void Clear_memory(struct memory *bank);
+void Clear_memory(struct memory *bank, size_t nbletters);

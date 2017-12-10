@@ -137,6 +137,7 @@ size_t Count_letters(SDL_Surface *picture) {
 
 // Detect all characters of the picture
 struct memory *DetectAll(SDL_Surface *picture, size_t nbletters) {
+  size_t cpt = 0;
   struct memory *bank = init(nbletters);
   int beginline = 0, endline = 0, begincolumn = 0, endcolumn = 0;
   while (beginline < picture->h) {
@@ -154,7 +155,8 @@ struct memory *DetectAll(SDL_Surface *picture, size_t nbletters) {
       endcolumn = EndChar(picture, beginline, endline, begincolumn);
       //Draw(picture, beginline, endline, begincolumn, endcolumn);
       add_Mat(bank, resizeMat(create_image_letter(picture,beginline,
-       endline, begincolumn,endcolumn),30), nbletters);
+       endline, begincolumn,endcolumn),30), cpt);
+      cpt++;
       Draw(picture, beginline, endline, begincolumn, endcolumn);
       begincolumn = endcolumn + 2;
     }

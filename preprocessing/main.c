@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 
   print_all_matrix(bank, nbletters);
 
-  Clear_memory(bank);
+  Clear_memory(bank, nbletters);
 
   return 0;
 }

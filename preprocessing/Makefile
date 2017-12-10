@@ -1,6 +1,6 @@
 ## Makefile dectection of characters
  
-CC=gcc
+CC=gcc -fsanitize=address
  
 CPPFLAGS= `pkg-config --cflags sdl` -MMD 
 CFLAGS= -Wall -Wextra -Werror -std=c99 -O3 -g
