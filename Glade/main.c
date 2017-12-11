@@ -17,6 +17,8 @@ typedef struct
       
 static SGlobalData data;  
 static gchar *name_of_image=NULL;
+static gchar *name_of_file="data.txt";
+static gchar *contents= NULL;
 
       // Initilizing SDL
 void init_sdl(void) {
@@ -91,7 +93,7 @@ SDL_Surface* display_image(SDL_Surface *img) {
 		  GObject *ex= gtk_builder_get_object (data.builder, "Charger");
 		  if(NULL ==ex)
 		  {
-			fprintf(stderr,"unable to file object");
+			fprintf(stderr,"Charger do not exist");
 		  }
 		  GtkFileChooser *file= GTK_FILE_CHOOSER(ex);
 		  name_of_image=gtk_file_chooser_get_filename(file);
@@ -99,10 +101,17 @@ SDL_Surface* display_image(SDL_Surface *img) {
 		  GtkImage *image=GTK_IMAGE(gtk_builder_get_object(data.builder, "Image"));
 		  gtk_image_set_from_file(image, name_of_image);
 	  }	    
-	  
 	  G_MODULE_EXPORT void on_Display_text_clicked()
 	  {
-		  
+		  GtkLabel *texte = GTK_LABEL(gtk_builder_get_object(data.builder, "label"));
+		  if(NULL == texte)
+		  {
+			  fprintf(stderr,"label do not exist");
+		  }
+		  if(g_file_get_contents(name_of_file,&contents,NULL,NULL))
+		  {
+			  gtk_label_set_text(texte,contents);
+		  }
 	  }
 	  G_MODULE_EXPORT void on_treatment_image_clicked()
 	  {
