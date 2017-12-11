@@ -1,0 +1,24 @@
+Preprocessing
+
+Pour utiliser cette partie, il suffit de taper la commande
+
+make dans le bash.
+
+Une interface graphique se chargera et il faudra suivre les directives.
+
+Les différentes lettres sont affichés
+
+# xor.c is the deep-learning which is suppose to recognize xor function.
+It can initialize and change link weight, but learning function is 
+surely false, because results are wrong too.
+
+# layer.c is an other deep_learning, not over which uses struct and 
+linked list. It can almost initialize and 
+it will become the new deep_learning system for the future. 
+( It can write link value and get it wile a txt file).
+
+both compile with gcc.
+
+Sauvegarde
+
+La fonction de sauvegarde écrit le texte reconnu.
