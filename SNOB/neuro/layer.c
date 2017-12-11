@@ -125,6 +125,7 @@ void set_weight_in_txt(struct neuro **layer1, size_t len, char c, size_t nbweigh
 
 int get_weight_in_txt(struct neuro **layer, size_t len, size_t nbweight, FILE* file)
 {
+  int f;
   if(!file)
   {
     return 0;
@@ -133,7 +134,8 @@ int get_weight_in_txt(struct neuro **layer, size_t len, size_t nbweight, FILE* f
   {
     for (size_t j = 0; j < nbweight; j++)
     {
-      fscanf(file, "%lf", &*(layer[i]->weight + j));
+      f = fscanf(file, "%lf", &*(layer[i]->weight + j));
+      printf("%d\n", f);
     }
   }
   return 1;
