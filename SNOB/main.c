@@ -136,7 +136,6 @@ void savedata(char data[])
 G_MODULE_EXPORT void on_treatment_image_clicked(){
 	GtkLabel *texte = GTK_LABEL(
 					gtk_builder_get_object(data.builder, "Number"));
-	learn();
 	init_sdl();
 	if(NULL == texte)
 	{
@@ -166,7 +165,7 @@ G_MODULE_EXPORT void on_treatment_image_clicked(){
 	struct memory *bank = DetectAll(picture, nbletters);
 	display_image(picture);
 	print_all_matrix(bank, nbletters);
-
+	learn();
 	struct neuro **inputs = init_layer(150, 900);
 	struct neuro **hidden = init_layer(26,150);
 	struct neuro **output = init_layer(0,26);
@@ -175,17 +174,17 @@ G_MODULE_EXPORT void on_treatment_image_clicked(){
 	file = fopen("neuro/weight.ocr", "r");
 	get_weight_in_txt(inputs, 900, 150,file);
 	get_weight_in_txt(hidden, 150,26,file);
-	char str[taille_max]="";
+	/*char str[taille_max]="";*/
 	for (size_t i = 0; i < nbletters; i++) 
 	{
 		set_enter(inputs, bank -> tab[i] -> mat, 900 );
 		front_propa(inputs, hidden, 900,150);
 		front_propa(hidden, output,150,26);
 		printf("%c ", return_letter(output, 26) );
-		str[i]=return_letter(output, 26);
+		/*str[i]=return_letter(output, 26);*/
 	}
 	fclose(file);
-	savedata(str);
+	/*savedata(str);*/
 	free_pointers(inputs,900);
 	free_pointers(hidden,150);
 	free_pointers(output,26);
