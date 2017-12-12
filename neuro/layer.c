@@ -2,7 +2,9 @@
 #include <err.h>
 #include <dirent.h>
 #include "../preprocessing/pixel_operations.h"
-
+#include "../Matrix/createMat.h"
+#include "../preprocessing/segmentation.h"
+#include "../preprocessing/greyscale.h"
 double frand_a_b(double a, double b)
 {
   return ( rand()/(double)RAND_MAX ) * (b-a) + a;
@@ -100,11 +102,11 @@ void set_weight_in_txt(struct neuro **layer1, size_t len, char c, size_t nbweigh
   FILE* file = NULL;
   if(c)
   {
-    file = fopen("weights.ocr", "w");
+    file = fopen("neuro/weight.ocr", "w");
   }
   else
   {
-    file = fopen("weights.ocr", "a");
+    file = fopen("neuro/weight.ocr", "a");
   }
   if(!file)
   {
@@ -153,14 +155,11 @@ double *resize(SDL_Surface *img, size_t n)
   }
   return tab;
 }
+
 double *expected_value_tab(char c)
 {
   double *res = calloc(26, sizeof(double));
-  if(c >= 'a' && c <= 'z')
-  {
-    res[c-'a'] = 1;
-  }
-  else if(c >= 'A' && c <= 'Z')
+  if(c >= 'A' && c <= 'Z')
   {
     res[c-'A'] = 1;
   }
@@ -175,54 +174,74 @@ double error(struct neuro **output, size_t len)
   }
   return error;
 }
+
+char return_letter(struct neuro **output,size_t len)
+{
+  double max = 0;
+  size_t index = 0;
+  char res;
+  for (size_t i = 0; i < len; i++) {
+    if(max < output[i] -> value)
+    {
+      max = output[i] -> value;
+      index = i;
+    }
+  }
+  res = 'A' + index;
+  return res;
+}
 void learn()
 {
   struct neuro **inputs = init_layer(150, 900);
   struct neuro **hidden = init_layer(26,150);
   struct neuro **output = init_layer(0,26);
   char *ch = malloc(sizeof(char)* 200);
+  struct memory *bank = init(1);
   double *res;
-  double *tab;
+  //double *tab;
   double err = 10000;
   FILE* file = NULL;
-  file = fopen("weight.ocr", "r");
+  file = fopen("neuro/weight.ocr", "r");
   get_weight_in_txt(inputs, 900, 150,file);
   get_weight_in_txt(hidden, 150,26,file);
   //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[0], hidden[0] -> weight[0] );
   //lsprintf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[1], hidden[0] -> weight[1] );
-  for (size_t i = 0; err > 70; i++)
+  for (size_t i = 0; err > 0.15; i++)
   {
     err = 0;
-    DIR * j = opendir("./neuro/learning");
+    DIR * j = opendir("./neuro/B/");
     struct dirent * dr;
-    dr = readdir(j);
-    dr = readdir(j);
     while ((dr = readdir(j)) != NULL)
     {
-      strcpy(ch, "./neuro/learning/");
+      strcpy(ch, "./neuro/B/");
+      if(dr->d_name[0] == '.')
+      {
+        dr = readdir(j);
+      }
+      if(dr->d_name[0] == '.')
+      {
+        dr = readdir(j);
+      }
       strcat(ch, dr->d_name);
-
       SDL_Surface *img = IMG_Load(ch);
+      Binarisation(img, 127);
+      bank = DetectAll(img,1);
       res = expected_value_tab(dr -> d_name[0]);
-      tab = resize(img, 30);
-      set_enter(inputs, tab, 900);
+      set_enter(inputs, bank -> tab[0] -> mat, 900);
       front_propa(inputs, hidden,900,150);
       front_propa(hidden, output,150,26);
       back_propa_output(output, res, 26);
       back_propa(hidden, output,150,26);
       back_propa(inputs,hidden,900,150);
-      set_weight(inputs, hidden,900,150, 0.002);
-      set_weight(hidden, output,150,26, 0.002);
-      SDL_FreeSurface(img);
+      set_weight(inputs, hidden,900,150, 0.015);
+      set_weight(hidden, output,150,26, 0.015);
       free(res);
-      free(tab);
+      Clear_memory(bank, 1);
       err += error(output, 26);
     }
-    err /= 12;
-
-    printf("%lf\n", err );
+    err /= 0.52;
+    printf("erreur :%lf\n", err );
   }
-  hidden[0] -> weight[0] = 0.10;
   set_weight_in_txt(inputs, 900,1,150);
   set_weight_in_txt(hidden, 150,0,26);
   //printf("inputs :%lf, hidden : %lf\n", inputs[0] -> weight[0], hidden[0] -> weight[0] );
@@ -233,10 +252,19 @@ void learn()
   free_pointers(inputs,900);
   free_pointers(hidden,150);
   free_pointers(output,26);
+
 }
 
 void only_front()
 {
+  /*struct neuro **inputs = init_layer(150, 900);
+  struct neuro **hidden = init_layer(52,150);
+  struct neuro **output = init_layer(0,52);
+  FILE* file = NULL;
+  file = fopen("neuro/weight.ocr", "r");
+  get_weight_in_txt(inputs, 900, 150,file);
+  get_weight_in_txt(hidden, 150,52,file);
+  */
 
 }
 
