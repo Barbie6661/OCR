@@ -74,7 +74,7 @@ SDL_Surface* display_image(SDL_Surface *img) {
 
 
 // Main function
-int main(/*int argc, char *argv[]*/) {
+int main(int argc, char *argv[]) {
   learn();
   if (argc != 2)
     return 1;
